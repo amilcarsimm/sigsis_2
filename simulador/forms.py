@@ -1,5 +1,5 @@
 # -*- coding: UTF8 -*-
-from setup.settings import STATIC_ROOT
+from setup.settings import STATIC_URL
 from django import forms
 
 # Agg backend, which uses the C++ antigrain rendering engine to make nice PNGs. The Agg backend is also configured to recognize requests to generate other output formats (PDF, PS, EPS, SVG). The easiest way to configure Matplotlib to use Agg is to call:
@@ -557,10 +557,10 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plt.grid(which='major', axis='both', color='k', linestyle=':')
         if(plot_amostras):
             if (flag_subplot == 3): plt.subplot(211)
-            stem(t2, s2, linefmt='g--', markerfmt='go', linewidth=1, label='Amostras', basefmt='k-')
+            plt.stem(t2, s2, linefmt='g--', markerfmt='go', label='Amostras', basefmt='k-')
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -573,7 +573,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plot(t2, sg, '-', linewidth=1.2, drawstyle='steps-post', color='cyan', label='Sinal Quantizado - Genérico')
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -583,7 +583,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plot(t2, eq_g, ':', linewidth=1.5, drawstyle='steps-post', color='grey', label='Erro de Quantização - Genérico')
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -593,7 +593,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plot(t2, s3, '-', linewidth=1.2, drawstyle='steps-post', color='blue', label='Sinal Quantizado - Mid-tread')
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -613,7 +613,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plot(t2, s4, linewidth=1.2, drawstyle='steps-post', color='magenta', label='Sinal Quantizado - Mid-rise'),
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -623,7 +623,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
             plot(t2, eq_mr, ':', linewidth=1.5, drawstyle='steps-post', color='black', label='Erro de Quantização - Mid-rise')
             plt.ylabel('$f(t)$ [V]')
             plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
+            plt.xticks(t2_x, rotation=90, fontsize=8)
             plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
             plt.xlim(min(t), max(t))
             plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -654,7 +654,8 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
 
     pilImage.save(im_buffer, 'PNG')
 
-    path_graph = STATIC_ROOT + 'graficos/graph' + str(random_image)+'.png'
+    path_graph = STATIC_URL + '\\graficos\\graph' + str(random_image)+'.png'
+    print(path_graph)
 
     pylab.savefig(path_graph)
     pylab.close()

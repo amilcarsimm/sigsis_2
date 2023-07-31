@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        
+        <title>Tópicos de Conhecimento</title>
+        
+        <meta name="generator" content="" />
+        <meta name="author" content="Amilcar Joel Simm" />
+        <meta name="keywords" content="Proposta de Ferramenta Web para o Suporte ao Ensino,TCC,IFSC-SJ" />
+        <meta name="description" content="Proposta de Ferramenta Web para o Suporte ao Ensino" />
+        
+        
+        <link rel="stylesheet" href="{% static '/styles/css1.css' %}" type="text/css" />
+        <!--[if IE]>
+            <link rel="stylesheet" href="{% static 'css/cssIE.css' %}" type="text/css" />
+        <![endif]-->
+
+        <script type="text/javascript" src="{% static 'styles/js1.js' %}"></script>
+        
+        <script type="text/x-mathjax-config">
+  	  		MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  	  	</script>
+	  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	  	
+    </head>
+    <body>
+        <div id="cabecalho">            
+            <a href="{% url 'admin:index' %}" target="_blank"><h5 id="imagem3">Acesso restrito</h5></a>
+            <div>
+	            <div id="imagem2">
+	                <a href="http://www.sj.ifsc.edu.br/"><img class="img3" title="IFSC - Câmpus São José" alt="IFSC - Câmpus São José" src="{% static '/imagens/marca_saojose.png' %}"/></a>
+	            </div>
+	            <a class="no-decoration" href="{% url 'core.views.index'%}"><h1 class="title">Temas de Conhecimento</h1></a>
+            </div>
+            <!-- Monta menu de módulos e roteiros -->
+            <div id="menu-cabecalho">
+                <table>
+                    <tr>
+                    	<td class="menu-cabecalho-geral"><a class="menu-cabecalho-geral" href="{% url 'core.views.index'%}"><h5>Início</h5></a></td>
+                    	{% for modulo in modulos %}
+                        <td class="menu-cabecalho-geral" onmouseover="showmenu('modulo{{ modulo.mod_seq }}roteiros')" onmouseout="hidemenu('modulo{{ modulo.mod_seq }}roteiros')">
+                            <h5>Módulo {{ modulo.mod_seq }} </h5>
+                            <table class="moduloroteiros" id="modulo{{ modulo.mod_seq }}roteiros">
+                                {% for roteiro in roteiros %}
+        						<tr>
+                                    <td>
+                                        <a tabindex="1" class="modrot" href="{% url 'core.views.detalhe' mod_id=modulo.id rot_id=roteiro.id %}">Roteiro {{roteiro.rot_seq}}</a>
+                                    </td>
+                                </tr>
+        						{% endfor %}                                
+                            </table>
+                        </td>
+                       {% endfor %}
+                     </tr>     
+                </table>
+            </div>
+        </div>

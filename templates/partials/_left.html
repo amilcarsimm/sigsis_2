@@ -1,0 +1,28 @@
+        <!-- Menu lateral -->
+        <div id="menu-lateral">
+            <a class="menu-lateral" href="http://wiki.sj.ifsc.edu.br/wiki/index.php/Portal_de_Telecomunica%C3%A7%C3%B5es" target="_blank">Wiki - Portal de Telecomunicações</a>
+            <a class="menu-lateral" href="http://biblioteca.ifsc.edu.br/index.html" target="_blank">Sistema Sophia - Biblioteca IFSC</a>
+            <a class="menu-lateral" href="{% url 'core.views.simulador'%}">Simulador</a>
+            <a class="menu-lateral" href="{% url 'core.views.index'%}">Início</a>
+            <div id="modrot-lat">
+                <h3>Módulos e Roteiros</h3>
+                <ol>
+                {% for modulo in modulos %}        	
+                    <li><h4 class="modrot-lat">Módulo: {{ modulo.mod_seq }}</h4>
+                    <i>{{ modulo.mod_nome }}</i></li>
+                        <ol>
+                        {% for roteiro in roteiros %}
+                        {% if roteiro.rot_modulo == modulo %}
+                            <a class="modrot-lat" href="{% url 'core.views.detalhe' mod_id=modulo.id rot_id=roteiro.id %}">
+                            <li>Roteiro {{roteiro.rot_seq}}<br/>
+                            <i>{{roteiro.rot_nome}}</i></li>
+                            </a>
+                            <hr />
+                        {% endif %}
+                        {% endfor %}
+                        </ol>
+                {% endfor %}
+                </ol>
+            </div>
+        </div>
+                
