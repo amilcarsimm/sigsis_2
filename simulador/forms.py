@@ -65,6 +65,7 @@ class SimuladorForms(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'required': True,
+                'class':'input_medio',
                 'tabindex':1
             }
         )
@@ -87,7 +88,9 @@ class SimuladorForms(forms.Form):
             attrs={
                 'required': True,
                 'class':'input_menor',
-                'tabindex':5})
+                'tabindex':5
+            }
+        )
     )
     # fieldset "Sinal"
     dc = forms.FloatField(
@@ -96,8 +99,10 @@ class SimuladorForms(forms.Form):
             attrs={
                 'required': True,
                 'class':'input_menor',
-                'tabindex':6})
-            )
+                'tabindex':6
+            }
+        )
+    )
     ampl = forms.FloatField(
         label='Amplitude <i>A</i> [V]',
         widget=forms.NumberInput(
@@ -114,18 +119,18 @@ class SimuladorForms(forms.Form):
         widget=forms.Select(
             attrs={
                 'required': True,
+                'class':'input_menor',
                 'tabindex':8
             }
         )
     )
     freq = forms.FloatField(
         label='Frequência Fundamental <i>f</i> [Hz]',
-        min_value=1,
         widget=forms.NumberInput(
             attrs={
                 'required': True,
-                'class':'input_menor',
-                'tabindex':9
+                'class': 'input_menor',
+                'tabindex': 9,
             }
         )
     )
@@ -159,7 +164,7 @@ class SimuladorForms(forms.Form):
             attrs={
                 'required': True,
                 'class':'input_menor',
-                'tabindex':11
+                'tabindex':12
             }
         )
     )
@@ -170,8 +175,9 @@ class SimuladorForms(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'required': True,
+                'class':'input_medio',
                 'strip': True,
-                'tabindex':11
+                'tabindex':13
             }
         )
     )
@@ -185,7 +191,7 @@ class SimuladorForms(forms.Form):
                 'required': True,
                 'class':'input_menor',
                 'step': '0.1',
-                'tabindex':11
+                'tabindex':14
             }
         )
     )
@@ -194,7 +200,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':15
             }
         )
     )
@@ -203,7 +209,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':16
             }
         )
     )
@@ -212,7 +218,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput
         (attrs={
-            'tabindex':11
+            'tabindex':17
             }
         )
     )
@@ -221,7 +227,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':18
             }
         )
     )
@@ -230,7 +236,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':19
             }
         )
     )
@@ -238,7 +244,7 @@ class SimuladorForms(forms.Form):
         label='Sinal Quantizado <i>Mid-rise</i> [Magenta]',
         required=False,widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':20
             }
         )
     )
@@ -247,7 +253,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':21
             }
         )
     )
@@ -256,7 +262,7 @@ class SimuladorForms(forms.Form):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':22
             }
         )
     )
@@ -264,7 +270,7 @@ class SimuladorForms(forms.Form):
         label='Erro de Quantização Genérico [Cinza]',required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'tabindex':11
+                'tabindex':23
             }
         )
     )
@@ -325,6 +331,10 @@ def get_simulador(request):
 
             # caso o início do gráfico seja maior que o fim
             if t_start >= t_stop:
+                return SimuladorForms(request.POST, label_suffix=':')
+            
+            # caso a frequência seja <= 0
+            if freq <= 0:
                 return SimuladorForms(request.POST, label_suffix=':')
 
             showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)#xrotulo, yrotulo,

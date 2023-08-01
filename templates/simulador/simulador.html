@@ -1,34 +1,9 @@
 {% load static %}
 {% load i18n %}
+{% include "../partials/_header.html" %}
+{% include "../partials/_left.html" %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-    	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-        
-        <title>Tópicos de Conhecimento</title>
-        
-        <meta name="generator" content="" />
-        <meta name="author" content="Amilcar Joel Simm" />
-        <meta name="keywords" content="Proposta de Ferramenta Web para o Suporte ao Ensino,TCC,IFSC-SJ" />
-        <meta name="description" content="Proposta de Ferramenta Web para o Suporte ao Ensino" />
-        
-        <!--link rel="shortcut icon" href="{% static 'imagens/ifsc.ico' %}" type='image/x-icon' /-->
-        <link rel="stylesheet" href="{% static 'styles/css1.css' %}" type="text/css" />
-        <!--[if IE]>
-            <link rel="stylesheet" href="{% static 'css/cssIE.css' %}" type="text/css" />
-        <![endif]-->
-
-        <script type="text/javascript" src="{% static 'styles/js1.js' %}"></script>
-        
-        <script type="text/x-mathjax-config">
-  	  		MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-  	  	</script>
-	  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-	  	
-    </head>
-    <body>
-
+{% block content %}
 
 		<div id="situa-geral">			
 			<div id="situa">
@@ -41,14 +16,19 @@
 	    		<legend>Simulador</legend>
 	    		{% if request.method == 'POST' %}
                 <div id="imagem1">
-					{% if simulador.t_start.value >= simulador.t_stop.value %}
-                    <!-- Para erros de início do eixo maior que o fim do eixo -->
+					<!-- Para erros de início do eixo maior que o fim do eixo -->
+                    {% if not simulador.freq.value >= 0 %}
+                    <h4 class="box_blue">Não processado! A <i>frequência</i> precisa ser maior que zero. Revise os valores.</h4>
+                    <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'imagens/errado.gif' %}" onload="showerror2('{{ simulador.freq.id_for_label }}')"/>
+                    {% elif simulador.t_start.value >= simulador.t_stop.value %}
                     <h4 class="box_blue">Não processado! O <i>início do eixo</i> não pode ser maior que o <i>fim do eixo</i>. Revise os valores.</h4>
                     <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'imagens/errado.gif' %}" onload="showerror2('{{ simulador.t_start.id_for_label }}');showerror2('{{ simulador.t_stop.id_for_label }}')"/>
+                    <!-- Para erros de frequência <= 0 -->
                     {% else %}
-                    <img class="img2" title="Gráfico de onda." src="{% static 'graficos/graph' %}{{simulador.random_image.value}}.png" alt="Gráfico de onda."/>
+                    <img class="img2" title="Gráfico de onda" src="{% static 'graficos/graph' %}{{simulador.random_image.value}}.png" alt="Gráfico de onda"/>
 				    <h5 class="box_blue">Posicione o mouse em cima do gráfico, para ampliá-lo.</h5>                        
-                    {% endif %}					
+                    {% endif %}
+                    					
 	        	</div>
                 {% endif %}
                 <fieldset class="sim_interno">
@@ -79,12 +59,12 @@
                         <th class="no-decoration" colspan="2">{{ simulador.fs }}</th>
                     </tr>
                     <tr>
-                        <th id="id_figura" class="blue" colspan="2"><hr/>Figura:</th>
+                        <th id="id_figura" class="blue" colspan="3"><hr/>Figura:</th>
                     </tr>
                     <tr>
                         <th class="no-decoration">{{ simulador.plot_sinal}}<label for="{{ simulador.plot_sinal.id_for_label }}">{{ simulador.plot_sinal.label }}</label></th>
-			<th class="no-decoration">{{ simulador.plot_fourier}}<label for="{{ simulador.plot_fourier.id_for_label }}">{{ simulador.plot_fourier.label }}</label></th>                        
-			<th class="no-decoration">{{ simulador.plot_amostras}}<label for="{{ simulador.plot_amostras.id_for_label }}">{{ simulador.plot_amostras.label }}</label></th>
+                        <th class="no-decoration">{{ simulador.plot_fourier}}<label for="{{ simulador.plot_fourier.id_for_label }}">{{ simulador.plot_fourier.label }}</label></th>                        
+                        <th class="no-decoration">{{ simulador.plot_amostras}}<label for="{{ simulador.plot_amostras.id_for_label }}">{{ simulador.plot_amostras.label }}</label></th>
                     </tr>
                 </table>
                     <fieldset class="sim_sim">
@@ -95,14 +75,13 @@
                             <td>{{ simulador.niveis }}</td>
                         </tr>
                         <tr>
-                            <th class="no-decoration"><label for="{{ simulador.limiar_inf.id_for_label }}">{{ simulador.limiar_inf.label }}:</label><img class="helptext" title="{{ simulador.limiar_inf.help_text }}" alt="{{ simulador.limiar_inf.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th
-                            ><td>{{ simulador.limiar_inf }}</td>
+                            <th class="no-decoration"><label for="{{ simulador.limiar_inf.id_for_label }}">{{ simulador.limiar_inf.label }}:</label><img class="helptext" title="{{ simulador.limiar_inf.help_text }}" alt="{{ simulador.limiar_inf.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th><td>{{ simulador.limiar_inf }}</td>
                         </tr>                        
                         <tr>
-                            <th id="id_figura" class="blue" colspan="2"><hr/>Figura:</th></tr>
-                            <tr>
-                                <th class="no-decoration" style="padding:10px;">
-                            {{ simulador.plot_quant_g}}<label for="{{ simulador.plot_quant_g.id_for_label }}">{{ simulador.plot_quant_g.label }}</label></th>
+                            <th id="id_figura" class="blue" colspan="2"><hr/>Figura:</th>
+                        </tr>
+                        <tr>
+                            <th class="no-decoration" style="padding:10px;">{{ simulador.plot_quant_g}}<label for="{{ simulador.plot_quant_g.id_for_label }}">{{ simulador.plot_quant_g.label }}</label></th>
                             <th class="no-decoration">{{ simulador.plot_quant_eq_g}}<label for="{{ simulador.plot_quant_eq_g.id_for_label }}">{{ simulador.plot_quant_eq_g.label }}</label></th>
                         </tr>
                     </table>
@@ -114,10 +93,11 @@
                             <th class="no-decoration"><label for="{{ simulador.quantiza.id_for_label }}">{{ simulador.quantiza.label }}:</label><img class="helptext" title="{{ simulador.quantiza.help_text }}" alt="{{ simulador.quantiza.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th>
                             <td>{{ simulador.quantiza }}</td>
                         </tr>
-                        <tr><th class="no-decoration" id="id_figura" colspan="2"><span class="blue"><hr/>Figura:</span></th></tr>
                         <tr>
-                            <th class="no-decoration" style="padding:10px;">
-                            {{ simulador.plot_quant_mt}}<label for="{{ simulador.plot_quant_mt.id_for_label }}">{{ simulador.plot_quant_mt.label }}</label>
+                            <th class="no-decoration" id="id_figura" colspan="2"><span class="blue"><hr/>Figura:</span></th>
+                        </tr>
+                        <tr>
+                            <th class="no-decoration" style="padding:10px;">{{ simulador.plot_quant_mt}}<label for="{{ simulador.plot_quant_mt.id_for_label }}">{{ simulador.plot_quant_mt.label }}</label>
                             <th class="no-decoration" style="padding:10px;">{{ simulador.plot_quant_eq_mt}}<label for="{{ simulador.plot_quant_eq_mt.id_for_label }}">{{ simulador.plot_quant_eq_mt.label }}</label></th>
                         </tr>
                         <tr>
@@ -127,21 +107,11 @@
                     </table>
                     </fieldset>
                 </fieldset>
-                <p><input type="submit" value="Enviar" tabindex="11"/>{{ simulador.random_image }}</p>
+                <p><input type="submit" value="Enviar" tabindex="24"/>{{ simulador.random_image }}<input type="reset" value="Limpar" tabindex="25"/></p>
 			</fieldset>
 			</form>
 			    {% endautoescape %}
     		</div>	
 		</div>
-
-        <div id="rodape">            
-            <h5>
-            <a class="menu-rodape" href="http://wiki.sj.ifsc.edu.br/wiki/index.php/Portal_de_Telecomunica%C3%A7%C3%B5es" target="_blank">Wiki - Portal de Telecomunicações</a>
-        	<a class="menu-rodape" href="http://biblioteca.ifsc.edu.br/index.html" target="_blank">Sistema Sophia - Biblioteca IFSC</a>
-        	<a class="menu-rodape" href="">Simulador</a>
-        	<a class="menu-rodape" href="">Início</a>
-        	</h5>
-    	</div>
-        
-    </body>
-</html>
+        {% endblock content %}
+        {% include "../partials/_footer.html" %}

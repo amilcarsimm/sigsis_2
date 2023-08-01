@@ -1,7 +1,6 @@
 body{margin:0; padding:0; font-family:verdana, arial, sans-serif;}
 p, li{text-align:justify; font-size:14px; margin:10px;}
 img{position:relative; border:0; max-width:98%;}
-hr{}
 h1,h2,h3,h4,h5{text-align:center; margin:5px; padding:3px;}
 hr{color:#00f; font-weight:bold;}
 
@@ -33,14 +32,14 @@ a.menu-cabecalho-geral:active{color:#ffffff;} /* selected link */
 
 table.moduloroteiros{position:absolute; visibility:hidden; z-index:1; padding-top:5px; width:auto; background-color:#4f81bd;}
 
-#modrot{position:relative; overflow:hidden; background-color:#4f81bd; width:20%; height:auto; float:left; border:solid 1px #fffff; margin:5px; padding:5px;}
+#modrot{position:relative; overflow:hidden; background-color:#4f81bd; width:20%; height:auto; float:left; border:solid 1px #fff; margin:5px; padding:5px;}
 a.modrot{text-decoration:none; text-align:center; display:block; font-size:12px; padding:5px; margin:5px; background-color:#ffffff; border:solid 1px #ffffff;}
 a.modrot:link {color:#00f;} /* unvisited link */
 a.modrot:visited {color:#00f; background-color:#fff;} /* visited link */
 a.modrot:hover {color:#00f; border:solid 1px #c0c0c0;} /* mouse over link */
 a.modrot:active {color:#f0f;} /* selected link */
 
-#menu-lateral{position:relative; width:30%; background-color:#4f81bd; color:#00ffff; margin:2px; padding:5px; margin-right:10px;}
+#menu-lateral{position:relative; float:left; width:30%; background-color:#4f81bd; color:#00ffff; margin:2px; padding:5px;}
 
 a.menu-lateral{display:block; text-decoration:none; border:solid 1px #fff; margin:5px; padding:5px;}
 a.menu-lateral:link{color:#fff;} /* unvisited link */
@@ -60,12 +59,12 @@ a.modrot-lat:active{color:#fff;} /* selected link */
 h4.modrot-lat{text-align:left;}
 
 /* página de detalhe*/
-#situa-geral{position:relative; z-index:1; width:65%; float:right; background-color:#cfcfcf; color:#000; border:solid 1px #4f81bd; margin:5px; margin-bottom:10px; padding:10px;}
+#situa-geral{position:relative; z-index:1; overflow:hidden; width:auto; background-color:#cfcfcf; color:#000; border:solid 1px #4f81bd; margin:5px; margin-bottom:10px; padding:10px;}
 .title2{color:#4f81bd;}
 #situa{position:relative; background-color:#fff; color:#000; border:solid 1px #4f81bd; margin:5px; padding:10px;}
 .title3{color:#4f81bd; text-align:left;}
 
-.menu-subsidio-rodape{}
+
 
 a.menu-subsidio-rodape:link{background-color:#fff; color:#4f81bd; margin:3px; padding:3px;} /* unvisited link */
 a.menu-subsidio-rodape:visited{text-decoration:none; color:#0af;} /* visited link */
@@ -78,14 +77,14 @@ legend{padding:5px; text-align:left; color:#00f;}
 label{text-align:left; padding:5px;}
 input{margin:2px; color:#00f; background-color:#eee;}
 .box_blue{position:relative; padding:2px; border:solid 1px #00f; background-color:#eee; color:#00f;}
-th{font-weight:normal; font-size:14px; width:70%}
+th{font-weight:normal; font-size:14px;}
 .blue{color:#00f;}
 
 #id_amostras{list-style-type: none; padding:0px;}
 #imagem1{position:relative; float:right; width:40%; margin:10px; text-align:center;}
 
 .img2{position:relative; padding:2px; border:solid 1px #00f; width:100%; height:auto; text-indent:10px; text-align:justify; font-size:10px; background-color:#ccf;}
-.img2:hover{position:fixed; width:auto; align:center; top:2px; right:20px; z-index:1;}
+.img2:hover{position:fixed; width:auto; top:2px; right:20px; z-index:1;}
 .img5{position:relative; text-align:center; width:200px; height:auto; margin-top:10px;}
 
 #texto{position:relative; margin:5px; width:auto;}
@@ -100,7 +99,8 @@ table.sim_sim{position:relative; width:98%; margin:5px;}
 .sim_float{position:relative; width:55%; float:left;}
 .sim_half{position:relative; width:45%;}
 th.sim_half{width:10%; padding:10px; vertical-align:top;}
-.input_menor{width:40%;}
+.input_menor{width:75px; height:23px;}
+.input_medio{width:150px; height:23px;}
 .helptext{position:relative; width:20px; vertical-align:bottom; margin-left:2px;}
 
 /* Fim Simulador */
