@@ -1,5 +1,5 @@
 # -*- coding: UTF8 -*-
-from setup.settings import STATIC_URL
+#from setup.settings import static
 from django import forms
 
 # Agg backend, which uses the C++ antigrain rendering engine to make nice PNGs. The Agg backend is also configured to recognize requests to generate other output formats (PDF, PS, EPS, SVG). The easiest way to configure Matplotlib to use Agg is to call:
@@ -126,6 +126,7 @@ class SimuladorForms(forms.Form):
     )
     freq = forms.FloatField(
         label='Frequência Fundamental <i>f</i> [Hz]',
+        min_value= 1,
         widget=forms.NumberInput(
             attrs={
                 'required': True,
@@ -333,10 +334,11 @@ def get_simulador(request):
             if t_start >= t_stop:
                 return SimuladorForms(request.POST, label_suffix=':')
             
+            '''
             # caso a frequência seja <= 0
             if freq <= 0:
                 return SimuladorForms(request.POST, label_suffix=':')
-
+            '''
             showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)#xrotulo, yrotulo,
 
             return SimuladorForms(request.POST, label_suffix=':')
@@ -664,7 +666,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
 
     pilImage.save(im_buffer, 'PNG')
 
-    path_graph = STATIC_URL + '\\graficos\\graph' + str(random_image)+'.png'
+    path_graph = 'setup/static/graficos/graph' + str(random_image) + '.png'
     print(path_graph)
 
     pylab.savefig(path_graph)
