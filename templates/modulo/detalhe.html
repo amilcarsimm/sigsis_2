@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+	<div id="situa-geral">
+		
+		<div id="situa">
+			<h2 class="title2">Módulo {{modulo.mod_seq}} - {{modulo.mod_nome}}</h2>
+			<h5 class="title2">Criação do Módulo: {{modulo.mod_data_criado}}. Última alteração: {{modulo.mod_data_ult_altera}}</h5>
+			<p><b>Objetivo Geral do Módulo:</b> {{modulo.mod_objetivo_geral}}</p>
+		</div>
+		
+		<div id="situa">
+			<h2 class="title2">Roteiro {{roteiro.rot_seq}} - {{roteiro.rot_nome}}</h2>
+			<h5 class="title2">Criação do Roteiro: {{roteiro.rot_data_criado}}. Última alteração: {{roteiro.rot_data_ult_altera}}</h5>
+			<p><b>Objetivo Geral do Roteiro:</b> {{roteiro.rot_objetivo_geral}}</p>
+			<p><b>Objetivos Específicos do Roteiro:</b></p>
+			{% autoescape off %}{{roteiro.rot_objetivos_espec}}{% endautoescape %}
+		</div>
+		
+		<div id="situa">
+			<h3 class="title3">Subsídios:</h3>
+			{% autoescape off %}{{roteiro.rot_subsidio}}{% endautoescape %}
+			{% if roteiro.rot_simulador != '0' %}
+			{% include "simulador.html" %}
+			{% endif %}
+						
+		</div>
+		
+		
+		<div id="situa">
+			<h3 class="title3">Bibliografia:</h3>
+			{% autoescape off %}{{roteiro.rot_biblio}}{% endautoescape %}
+		</div>
+		
+		<div id="situa">
+			<h3 class="title3">Exercícios:</h3>
+			{% autoescape off %}{{roteiro.rot_exercicios}}{% endautoescape %}
+		</div>
+		
+		<div id="situa">
+			<h4 class="title2">Você está no Módulo {{ modulo.mod_seq }}: <i>{{ modulo.mod_nome }}</i>, Roteiro {{ roteiro.rot_seq }}: <i>{{ roteiro.rot_nome }}</i>.</h4>
+			<h3 class="title2">Roteiros: 
+			{% for roteiro in roteiros %}
+			{% if roteiro.rot_modulo == modulo %}
+				<a class="menu-subsidio-rodape" href="{% url 'core.views.detalhe' mod_id=modulo.id rot_id=roteiro.id %}">
+					{{roteiro.rot_seq}}	  
+				</a>
+			{% endif %}
+			{% endfor %}
+			</h3>
+		</div>        	
+	</div>
+{% endblock content %}
