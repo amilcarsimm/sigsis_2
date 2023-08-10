@@ -14,7 +14,7 @@ def index(request):
     roteiros = Roteiro.objects.order_by('rot_seq')
     indexs = Index.objects.order_by('index_titulo')
     
-    template = loader.get_template('index.html')
+    #template = loader.get_template('../templates/modulo/index.html')
     
     context = RequestContext(request, {
         'modulos': modulos,
@@ -22,7 +22,7 @@ def index(request):
         'indexs': indexs,
         }
     )
-    return render(request, 'modulo/index.html', context)
+    return render(request, 'modulo/index.html', {'context': context})
     #return HttpResponse(template.render(context))
 
 
@@ -36,7 +36,7 @@ def detalhe(request, mod_id, rot_id):
 
     simulador = get_simulador(request)
 
-    template = loader.get_template('detalhe.html')
+    #template = loader.get_template('/templates/modulo/detalhe.html')
     
     context = RequestContext(request, {
         'modulo': modulo,
@@ -46,6 +46,6 @@ def detalhe(request, mod_id, rot_id):
         'simulador': simulador,
         }
     )
-    return render(request, 'modulo/detalhe.html', context)
+    return render(request, 'modulo/detalhe.html', {'context': context})
     #return HttpResponse(template.render(context))
     

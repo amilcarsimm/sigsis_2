@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template import RequestContext, loader
 
-from simulador.forms import *
+from apps.simulador.forms import *
 from apps.modulo.models import Modulo, Roteiro
 
 def simulador(request):
@@ -10,7 +10,8 @@ def simulador(request):
     roteiros = Roteiro.objects.order_by('rot_seq')
     
     simulador = get_simulador(request)
-    template = loader.get_template('simulador-somente.html')
+   
+   #template = loader.get_template('simulador-somente.html')
     context = RequestContext(request, {
         'modulos': modulos,
         'roteiros': roteiros,
@@ -18,5 +19,5 @@ def simulador(request):
         }
     )
     
-    return render(request, 'modulo/detalhe.html', context)
+    return render(request, 'simulador/simulador.html', {'context': context})
     #return HttpResponse(template.render(context))
