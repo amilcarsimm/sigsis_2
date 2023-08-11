@@ -37,6 +37,9 @@
 		<div id="situa">
 			<h3 class="title3">Exercícios:</h3>
 			{% autoescape off %}{{roteiro.rot_exercicios}}{% endautoescape %}
+			{% if roteiro.rot_simulador != '0' %}
+			{% include "simulador/simulador-somente.html" %}
+			{% endif %}
 		</div>
 		
 		<div id="situa">
@@ -50,6 +53,6 @@
 			{% endif %}
 			{% endfor %}
 			</h3>
-		</div>        	
+		</div>   	
 	</div>
 {% endblock content %}

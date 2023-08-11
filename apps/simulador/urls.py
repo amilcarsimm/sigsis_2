@@ -4,4 +4,5 @@ from apps.simulador import *
 
 urlpatterns = [
         path('apps.simulador', simulador, name='simulador'),
+        #path('apps.simulador', simulador, name='simulador#s1'),
 ]
