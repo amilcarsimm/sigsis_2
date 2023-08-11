@@ -22,7 +22,7 @@ class ModuloAdmin(admin.ModelAdmin):
     date_hierarchy = 'mod_data_ult_altera'
 
 class RoteiroAdmin(admin.ModelAdmin):
-    list_display = ('rot_nome', 'rot_modulo', 'rot_seq')
+    list_display = ('rot_nome', 'rot_modulo', 'rot_seq',)
     search_fields = ('rot_nome', 'rot_subsidio',)
     list_filter = ('rot_modulo',)
     date_hierarchy = 'rot_data_ult_altera'

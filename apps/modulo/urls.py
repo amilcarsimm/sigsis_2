@@ -16,7 +16,7 @@ from django.contrib import admin
 from django.conf import settings
 #from django.contrib.auth import views as auth_views
 
-admin.autodiscover()
+#admin.autodiscover()
 
 urlpatterns = [
     #para inclusão de link para recuperação de senha    
@@ -33,6 +33,7 @@ urlpatterns = [
     #path(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
     path('', index, name='index'),
     #path('index', index, name='index'),
-    path('modulo/m(int:<mod_id>)/r(<int:rot_id>)', detalhe, name='roteiro'),
+    path('detalhe/m<int:mod_id>/r<int:rot_id>', detalhe, name='detalhe'),
+    #path('modulo/m\\(int:(?P<mod_id>[^/]+)\\)/r\\((?P<rot_id>[0-9]+)\\)\\Z', detalhe, name='roteiro'),
     path('simulador', simulador, name='simulador'),
 ]

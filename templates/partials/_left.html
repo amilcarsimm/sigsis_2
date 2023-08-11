@@ -13,7 +13,7 @@
                         <ol>
                         {% for roteiro in roteiros %}
                         {% if roteiro.rot_modulo == modulo %}
-                            <a class="modrot-lat" href="">
+                            <a class="modrot-lat" href="{% url 'detalhe' mod_id=modulo.id rot_id=roteiro.id %}">
                             <li>Roteiro {{roteiro.rot_seq}}<br/>
                             <i>{{roteiro.rot_nome}}</i></li>
                             </a>

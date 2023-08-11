@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% load staticfiles %}
+{% extends "modulo/base.html" %}
+{% load static %}
 {% load i18n %}
 
 {% block content %}
@@ -21,10 +21,10 @@
 		
 		<div id="situa">
 			<h3 class="title3">Subsídios:</h3>
-			{% autoescape off %}{{roteiro.rot_subsidio}}{% endautoescape %}
-			{% if roteiro.rot_simulador != '0' %}
-			{% include "simulador.html" %}
-			{% endif %}
+			{% autoescape off %}
+				{{roteiro.rot_subsidio}}
+			{% endautoescape %}
+			
 						
 		</div>
 		
@@ -44,7 +44,7 @@
 			<h3 class="title2">Roteiros: 
 			{% for roteiro in roteiros %}
 			{% if roteiro.rot_modulo == modulo %}
-				<a class="menu-subsidio-rodape" href="{% url 'core.views.detalhe' mod_id=modulo.id rot_id=roteiro.id %}">
+				<a class="menu-subsidio-rodape" href="{% url 'detalhe' mod_id=modulo.id rot_id=roteiro.id %}">
 					{{roteiro.rot_seq}}	  
 				</a>
 			{% endif %}

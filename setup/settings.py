@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     #'tinymce',
     #'sorl.thumbnail',
     #'mce_filebrowser',
-    'widget_tweaks',# biblioteca para customizar elementos do form simulador no template
+    #'widget_tweaks',# biblioteca para customizar elementos do form simulador no template
     'apps.modulo.apps.ModuloConfig',
     #'apps.roteiro.apps.RoteiroConfig',
     'apps.simulador.apps.SimuladorConfig',

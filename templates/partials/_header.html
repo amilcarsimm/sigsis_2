@@ -44,11 +44,11 @@
                     	{% for modulo in modulos %}
                         <td class="menu-cabecalho-geral" onmouseover="showmenu('modulo{{ modulo.mod_seq }}roteiros')" onmouseout="hidemenu('modulo{{ modulo.mod_seq }}roteiros')">
                             <h5>Módulo {{ modulo.mod_seq }} </h5>
-                            <table class="moduloroteiros" id="">
+                            <table class="moduloroteiros" id="modulo{{ modulo.mod_seq }}roteiros">
                                 {% for roteiro in roteiros %}
         						<tr>
                                     <td>
-                                        <a tabindex="1" class="modrot" href="">Roteiro </a>
+                                        <a tabindex="1" class="modrot" href="{% url 'detalhe' mod_id=modulo.id rot_id=roteiro.id %}">Roteiro {{roteiro.rot_seq}}</a>
                                     </td>
                                 </tr>
         						{% endfor %}                                

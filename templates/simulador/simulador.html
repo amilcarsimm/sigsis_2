@@ -1,7 +1,6 @@
+{% extends "modulo/base.html" %}
 {% load static %}
 {% load i18n %}
-{% include "../partials/_header.html" %}
-{% include "../partials/_left.html" %}
 
 {% block content %}
 
@@ -67,11 +66,11 @@
                     <legend>Quantização Genérica</legend>
 	            	<table class="sim_sim">
                         <tr>
-                            <th class="no-decoration"><label for="{{ simulador.niveis.id_for_label }}">{{ simulador.niveis.label }}:</label><img class="helptext" title="{{ simulador.niveis.help_text }}" alt="{{ simulador.niveis.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th>
+                            <th class="no-decoration"><label for="{{ simulador.niveis.id_for_label }}">{{ simulador.niveis.label }}:</label><img class="helptext" title="{{ simulador.niveis.help_text }}" alt="{{ simulador.niveis.help_text }}" src="{% static 'media/imagens/what.jpg' %}"/></th>
                             <td>{{ simulador.niveis }}</td>
                         </tr>
                         <tr>
-                            <th class="no-decoration"><label for="{{ simulador.limiar_inf.id_for_label }}">{{ simulador.limiar_inf.label }}:</label><img class="helptext" title="{{ simulador.limiar_inf.help_text }}" alt="{{ simulador.limiar_inf.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th><td>{{ simulador.limiar_inf }}</td>
+                            <th class="no-decoration"><label for="{{ simulador.limiar_inf.id_for_label }}">{{ simulador.limiar_inf.label }}:</label><img class="helptext" title="{{ simulador.limiar_inf.help_text }}" alt="{{ simulador.limiar_inf.help_text }}" src="{% static 'media/imagens/what.jpg' %}"/></th><td>{{ simulador.limiar_inf }}</td>
                         </tr>                        
                         <tr>
                             <th id="id_figura" class="blue" colspan="2"><hr/>Figura:</th>
@@ -86,7 +85,7 @@
                     <legend>Quantização Uniforme</legend>
 	            	<table class="sim_sim">
                         <tr>
-                            <th class="no-decoration"><label for="{{ simulador.quantiza.id_for_label }}">{{ simulador.quantiza.label }}:</label><img class="helptext" title="{{ simulador.quantiza.help_text }}" alt="{{ simulador.quantiza.help_text }}" src="{% static 'imagens/what.jpg' %}"/></th>
+                            <th class="no-decoration"><label for="{{ simulador.quantiza.id_for_label }}">{{ simulador.quantiza.label }}:</label><img class="helptext" title="{{ simulador.quantiza.help_text }}" alt="{{ simulador.quantiza.help_text }}" src="{% static 'media/imagens/what.jpg' %}"/></th>
                             <td>{{ simulador.quantiza }}</td>
                         </tr>
                         <tr>
@@ -110,5 +109,3 @@
     		</div>	
 		</div>
         {% endblock content %}
-        
-{% include "../partials/_footer.html" %}
