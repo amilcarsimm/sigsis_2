@@ -14,10 +14,12 @@ from scipy.signal.waveforms import *
 from numpy.core.multiarray import arange
 from PIL import Image
 from io import BytesIO
-from django.core.files.storage import FileSystemStorage
+
 import random
 import string
 import time
+
+from django.core.files.storage import FileSystemStorage
 #===============================================================================
 # from random import *
 # random.seed() #inicia a semente dos número pseudo randômicos
@@ -334,11 +336,16 @@ def get_simulador(request):
             if t_start >= t_stop:
                 return SimuladorForms(request.POST, label_suffix=':')
             
-            '''
+            
             # caso a frequência seja <= 0
-            if freq <= 0:
-                return SimuladorForms(request.POST, label_suffix=':')
-            '''
+            # if freq <= 0:
+            #     return SimuladorForms(request.POST, label_suffix=':')
+            
+            # caso a frequência seja <= 0
+            # elif freq <= 0:
+            #     msg = 'Simulação sem possibilidade\nde visualização.\nA frequência deve ser maior que zero.'
+            #     return SimuladorForms(request.POST, label_suffix=':',)
+            
             showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)#xrotulo, yrotulo,
 
             return SimuladorForms(request.POST, label_suffix=':')
@@ -506,8 +513,9 @@ def titula_grafico(request, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal,
     return titulo
 
 def subplot_image(request, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr):
-    #verifica a necessidade de subplot
+    # verifica a necessidade de subplot caso tenha fourier
     # flag para verificação da necessidade de subplot
+    print(subplot_image)
     flag_subplot = 0
     if(plot_sinal or plot_amostras or plot_quant_g or plot_quant_mt or plot_quant_mr or plot_quant_eq_g or plot_quant_eq_mt or plot_quant_eq_mr):  flag_subplot += 1
     if(plot_fourier):  flag_subplot += 2
@@ -531,9 +539,14 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
     elif (len(t2)>50):
         t2_x = []
         for i in arange(t2[0], t2[len(t2)-1], 4/fs):t2_x.append(i)
-    else:t2_x = t2
-
+    else: t2_x = t2
+    
+    plots = []
     fig = plt.figure() # para adicionar o title a figura e não aos subplots ou plot
+    # Para a imagem do gráfico
+    # para que o gráfico tem uma margem em baixo e outra um pouco maior em cima para a legenda
+    #ymin, ymax = ylim()   # return the current ylim
+    #ylim(ymin - 0.01, ymax + 0.15)  # set the ylim to ymin, ymax
 
     # para plotar os múltiplos sinais
     # verifica arrays muito longos
@@ -545,118 +558,105 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
         msg = verifica_niveis(request, dc, ampl, niveis)[0]
         plt.text(0.5, 0.5, msg, ha="center", va="center", size=20, color='k', bbox=dict(boxstyle="circle, pad=0.5", fc="r", ec="y", lw=1, alpha=0.5)), tick_params(direction='out', length=6, labelbottom="off", labelleft="off")
     else:
-        if (plot_sinal):
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t, s, '-', linewidth=1.5, color='red', label='Sinal')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
         if (plot_fourier):
-            # construção da transformada
-            fa = 100*freq
-            nfft = 2**12
-            f = np.arange(-nfft/2, nfft/2) * (fa / nfft)
-            s5 = fftpack.fftshift(np.abs(fftpack.fft(s, n=nfft))) / fa
-            # para plotagem
-            if (flag_subplot == 3): plt.subplot(212)
-            plot(f, s5, '-', linewidth=1.5, color='blue', label='Transformada de Fourier')
-            plt.ylabel('$F(f)$')
-            plt.xlabel('$f$')
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim([-4*freq, 4*freq])
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_fourier')
+        if (plot_sinal):
+            plots.append('plot_sinal')
         if(plot_amostras):
-            if (flag_subplot == 3): plt.subplot(211)
-            plt.stem(t2, s2, linefmt='g--', markerfmt='go', label='Amostras', basefmt='k-')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_amostras')
         if(plot_quant_g):
-            # verifica limites da onda
-            # if (min(niveis) < (dc - ampl)) or (max(niveis) > (dc + ampl)):
-            #    msg = 'Revise os dados\nno campo\n"Níveis de Quantização".\n\nNúmeros ultrapassam\nos limites da onda:\nde '+str(dc-ampl)+' a '+str(dc+ampl)+'.'
-            sg = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'g')[0]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, sg, '-', linewidth=1.2, drawstyle='steps-post', color='cyan', label='Sinal Quantizado - Genérico')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_quant_g')
         if(plot_quant_eq_g):
-            eq_g = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'g')[1]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, eq_g, ':', linewidth=1.5, drawstyle='steps-post', color='grey', label='Erro de Quantização - Genérico')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_quant_eq_g')
         if(plot_quant_mt):
-            s3 = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mt')[0]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, s3, '-', linewidth=1.2, drawstyle='steps-post', color='blue', label='Sinal Quantizado - Mid-tread')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_quant_mt')
         if(plot_quant_eq_mt):
-            eq_mt = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mt')[1]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, eq_mt, ':', linewidth=1.5, drawstyle='steps-post', color='grey', label='Erro de Quantização - Mid-tread')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_quant_eq_mt')
         if(plot_quant_mr):
-            s4 = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mr')[0]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, s4, linewidth=1.2, drawstyle='steps-post', color='magenta', label='Sinal Quantizado - Mid-rise'),
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
+            plots.append('plot_quant_mr')
         if(plot_quant_eq_mr):
-            eq_mr = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf,  'mr')[1]
-            if (flag_subplot == 3): plt.subplot(211)
-            plot(t2, eq_mr, ':', linewidth=1.5, drawstyle='steps-post', color='black', label='Erro de Quantização - Mid-rise')
-            plt.ylabel('$f(t)$ [V]')
-            plt.xlabel('$t$ [s]')
-            plt.xticks(t2_x, rotation=90, fontsize=8)
-            plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
-            plt.xlim(min(t), max(t))
-            plt.grid(which='major', axis='both', color='k', linestyle=':')
-        # caso nenhuma simulação seja marcada
-        if(not plot_sinal and not plot_fourier and not plot_amostras and not plot_quant_g and not plot_quant_mt and not plot_quant_mr and not plot_quant_eq_g and not plot_quant_eq_mt and not plot_quant_eq_mr):
-            msg = 'Nenhuma simulação\nfoi selecionada.'
-            plt.text(0.5, 0.5, msg, ha="center", va="center", size=20, color='k', bbox=dict(boxstyle="circle, pad=0.5", fc="yellow", ec="y", lw=1, alpha=0.5)), tick_params(direction='out', length=6, labelbottom="off", labelleft="off")
-
+            plots.append('plot_quant_eq_mr')
+        
+        if(len(plots) > 0):
+            margem_legenda = 0.15
+            if(len(plots) > 2 and len(plots) < 5): margem_legenda += 0.15
+            elif(len(plots) > 4 and len(plots) < 7): margem_legenda += 0.15
+            elif(len(plots) > 6 and len(plots) < 9): margem_legenda += 0.15
+            
+            for p in plots:
+                if(p == 'plot_fourier'):
+                    if (flag_subplot == 3): plt.subplot(212)
+                    fa = 100*freq
+                    nfft = 2**12
+                    f = np.arange(-nfft/2, nfft/2) * (fa / nfft)
+                    s5 = fftpack.fftshift(np.abs(fftpack.fft(s, n=nfft))) / fa
+                    plot(f, s5, '-', linewidth=1.5, color='blue', label='Transformada de Fourier')
+                    plt.ylabel('$F(f)$')
+                    plt.xlabel('$f$ [Hz]$')
+                    plt.xlim([-4*freq, 4*freq])
+                    plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
+                    plt.grid(which='major', axis='both', color='k', linestyle=':')
+                    # para que o gráfico tem uma margem em baixo e outra um pouco maior em cima para a legenda
+                    ymin, ymax = ylim()   # return the current ylim
+                    ylim(ymin - 0.01, ymax + 0.05)  # set the ylim to ymin, ymax
+                elif(p != 'plot_fourier'):
+                    if(flag_subplot == 3):
+                        plt.subplot(211)
+                    if(p == 'plot_sinal'):
+                        plot(t, s, '-', linewidth=1.5, color='red', label='Sinal')
+                    if(p == 'plot_amostras'):
+                        plt.stem(t2, s2, linefmt='g--', markerfmt='go', label='Amostras', basefmt='k-')
+                    if(p == 'plot_quant_g'):
+                        sg = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'g')[0]
+                        plot(t2, sg, '-', linewidth=1.2, drawstyle='steps-post', color='cyan', label='Sinal Quantizado - Genérico')
+                    if(p == 'plot_quant_eq_g'):
+                        eq_g = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'g')[1]
+                        plot(t2, eq_g, ':', linewidth=1.5, drawstyle='steps-post', color='grey', label='Erro de Quantização - Genérico')
+                    if(p == 'plot_quant_mt'):
+                        s3 = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mt')[0]
+                        plot(t2, s3, '-', linewidth=1.2, drawstyle='steps-post', color='blue', label='Sinal Quantizado - Mid-tread')
+                    if(p == 'plot_quant_eq_mt'):
+                        eq_mt = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mt')[1]
+                        plot(t2, eq_mt, ':', linewidth=1.5, drawstyle='steps-post', color='grey', label='Erro de Quantização - Mid-tread')
+                    if(p == 'plot_quant_mr'):
+                        s4 = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf, 'mr')[0]
+                        plot(t2, s4, linewidth=1.2, drawstyle='steps-post', color='magenta', label='Sinal Quantizado - Mid-rise')
+                    if(p == 'plot_quant_eq_mr'):
+                        eq_mr = quantizacao_vetor(request, s, s2,  dc, ampl, quantiza, niveis, limiar_inf,  'mr')[1]
+                        plot(t2, eq_mr, ':', linewidth=1.5, drawstyle='steps-post', color='black', label='Erro de Quantização - Mid-rise')
+        
+                    plt.ylabel('$f(t)$ [V]')
+                    plt.xlabel('$t$ [s]')
+                    plt.xlim(min(t), max(t))
+                    plt.xticks(t2_x, rotation=90, fontsize=8)
+                    plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
+                    plt.grid(which='major', axis='both', color='k', linestyle=':')
+                    # para que o gráfico tem uma margem em baixo e outra um pouco maior em cima para a legenda
+                    ymin, ymax = ylim()   # return the current ylim
+                    ylim(ymin - 0.01, ymax + margem_legenda)  # set the ylim to ymin, ymax
+    
     # Para a imagem do gráfico
     # para que o gráfico tem uma margem em baixo e outra um pouco maior em cima para a legenda
-    ymin, ymax = ylim()   # return the current ylim
-    ylim(ymin - 0.1 * (ymax - ymin), ymax + 0.35 * (ymax - ymin))  # set the ylim to ymin, ymax
+    # ymin, ymax = ylim()   # return the current ylim
+    # ylim(ymin - 0.01 * (ymax - ymin), ymax + 0.35 * (ymax - ymin))  # set the ylim to ymin, ymax
+    
+    if (flag_subplot == 0):
+        msg = 'Nenhuma simulação\nfoi selecionada.'
+        plt.text(0.5, 0.5, msg, ha="center", va="center", size=20, color='k', bbox=dict(boxstyle="circle, pad=0.5", fc="yellow", ec="y", lw=1, alpha=0.5)), tick_params(direction='out', length=6, labelbottom="off", labelleft="off")
+    
+    elif (flag_subplot == 1):
+        # para não ocultar o xlabel
+        fig.subplots_adjust(bottom=0.2)
+    elif (flag_subplot == 3):
+        fig.subplots_adjust(bottom=0.2)
+        # para que um subplot não sobreponha o outro, espaço entre os subplots
+        fig.subplots_adjust(hspace=0.4)
+        # As stated in the previous section, the default parameters (in inches) for Matplotlib plots are 6.4 wide and 4.8 high.
+        fig.set_figwidth(9) # para 2 subplots
+        fig.set_figheight(8) # para 2 subplots
 
     # título
     fig.suptitle(titula_grafico(request, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr))
-
-    # para que um subplot não sobreponha o outro, espaço entre os subplots
-    fig.subplots_adjust(hspace=0.75)
-
-    # para não ocultar o xlabel
-    if (flag_subplot == 1):fig.subplots_adjust(bottom=0.2)
 
     im_buffer = BytesIO()
     canvas = pylab.get_current_fig_manager().canvas
