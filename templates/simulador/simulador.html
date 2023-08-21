@@ -17,8 +17,8 @@
                 <div id="imagem1">
                     {% if simulador.t_start.value >= simulador.t_stop.value %}
                     <h4 class="box_blue">Não processado! O <i>início do eixo</i> não pode ser maior que o <i>fim do eixo</i>. Revise os valores.</h4>
-                    <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror2('{{ simulador.t_start.id_for_label }}');showerror2('{{ simulador.t_stop.id_for_label }}')"/>
-                    <!-- Para erros de frequência <= 0 -->
+                    <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('{{ simulador.t_start.id_for_label }}');showerror('{{ simulador.t_stop.id_for_label }}')"/>
+                    
                     {% else %}
                     <img class="img2" title="Gráfico de onda" src="{% static 'media/graficos/graph' %}{{simulador.random_image.value}}.png" alt="Gráfico de onda"/>
 				    <h5 class="box_blue">Posicione o mouse em cima do gráfico, para ampliá-lo.</h5>
@@ -44,9 +44,13 @@
                     <tr><th><label for="{{ simulador.desl.id_for_label }}">{{ simulador.desl.label }}:</label></th><td>{{ simulador.desl }}</td></tr>
                 </table>
                 </fieldset>
-                
+                {% if not simulador.plot_sinal.value and not simulador.plot_fourier.value %}
+                <fieldset id="simulacao" class="sim_sim" onload="showerror('simulacao')">
+                <legend id="simulacao_legenda" onload="showerror('simulacao_legenda')">Simulação</legend>
+                {% else %}
                 <fieldset class="sim_sim">
                 <legend>Simulação</legend>
+                {% endif %}
 	        	<table class="sim_sim">
                     <tr>
                         <th class="no-decoration"><label for="{{ simulador.fs.id_for_label }}">{{ simulador.fs.label }}:</label></th>
@@ -66,7 +70,7 @@
 	            	<table class="sim_sim">
                         <tr>
                             <th class="no-decoration"><label for="{{ simulador.niveis.id_for_label }}">{{ simulador.niveis.label }}:</label><img class="helptext" title="{{ simulador.niveis.help_text }}" alt="{{ simulador.niveis.help_text }}" src="{% static 'media/imagens/what.jpg' %}"/></th>
-                            <td>{{ simulador.niveis }}</td>
+                            <td>{{ simulador.niveis }} <script> onload="showerror3('{{ simulador.niveis.value }}')"</script></td>
                         </tr>
                         <tr>
                             <th class="no-decoration"><label for="{{ simulador.limiar_inf.id_for_label }}">{{ simulador.limiar_inf.label }}:</label><img class="helptext" title="{{ simulador.limiar_inf.help_text }}" alt="{{ simulador.limiar_inf.help_text }}" src="{% static 'media/imagens/what.jpg' %}"/></th><td>{{ simulador.limiar_inf }}</td>

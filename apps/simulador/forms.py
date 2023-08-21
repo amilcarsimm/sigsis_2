@@ -347,12 +347,12 @@ def get_simulador(request):
             #     return SimuladorForms(request.POST, label_suffix=':',)
             
             showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)#xrotulo, yrotulo,
-
+            #teste = "teste return ----"
             return SimuladorForms(request.POST, label_suffix=':')
 
     # ao acessar a página pela 1a vez
     else:
-        return SimuladorForms(default_data, label_suffix=':')
+        return SimuladorForms(default_data, label_suffix=':', )
 
 
 def constroi_onda_amostras(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf):
@@ -663,7 +663,6 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
     canvas.draw()
 
     pilImage = Image.frombytes('RGB', canvas.get_width_height(), canvas.tostring_rgb())
-
     pilImage.save(im_buffer, 'PNG')
 
     path_graph = 'setup/static/media/graficos/graph' + str(random_image) + '.png'
