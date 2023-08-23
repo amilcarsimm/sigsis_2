@@ -128,7 +128,7 @@ class SimuladorForms(forms.Form):
     )
     freq = forms.FloatField(
         label='Frequência Fundamental <i>f</i> [Hz]',
-        min_value= 1,
+        # min_value= 1,
         widget=forms.NumberInput(
             attrs={
                 'required': True,
@@ -174,7 +174,7 @@ class SimuladorForms(forms.Form):
     niveis = forms.CharField(
         label='Níveis de Quantização',
         help_text='Para o Quantizador Genérico. Em ordem crescente e separados por espaço em branco.',
-         max_length=100,
+        max_length=100,
         widget=forms.TextInput(
             attrs={
                 'required': True,
@@ -332,25 +332,20 @@ def get_simulador(request):
             plot_quant_eq_mr = form.cleaned_data['plot_quant_eq_mr']
             random_image = form.cleaned_data['random_image']
 
+            # #Não processando caso haja erros de preenchimento
             # caso o início do gráfico seja maior que o fim
             if t_start >= t_stop:
                 return SimuladorForms(request.POST, label_suffix=':')
-            
-            
             # caso a frequência seja <= 0
-            # if freq <= 0:
-            #     return SimuladorForms(request.POST, label_suffix=':')
-            
-            # caso a frequência seja <= 0
-            # elif freq <= 0:
-            #     msg = 'Simulação sem possibilidade\nde visualização.\nA frequência deve ser maior que zero.'
-            #     return SimuladorForms(request.POST, label_suffix=':',)
-            
-            showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)#xrotulo, yrotulo,
-            #teste = "teste return ----"
-            return SimuladorForms(request.POST, label_suffix=':')
+            elif freq <= 0:
+                return SimuladorForms(request.POST, label_suffix=':')
+            elif not plot_sinal and not plot_fourier and not plot_amostras and not plot_quant_g and not plot_quant_mt and not plot_quant_mr and not plot_quant_eq_g and not plot_quant_eq_mt and not plot_quant_eq_mr:
+                return SimuladorForms(request.POST, label_suffix=':')
+            else:
+                showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)
+                return SimuladorForms(request.POST, label_suffix=':')
 
-    # ao acessar a página pela 1a vez
+    # ao acessar a página pela primeira vez
     else:
         return SimuladorForms(default_data, label_suffix=':', )
 
@@ -393,7 +388,7 @@ def constroi_onda_amostras(request, t_start, t_stop, dc, ampl, freq, desl, fs, s
 
     return s, t, s2, t2
 
-def verifica_niveis(request, dc, ampl, niveis):
+def verifica_niveis(niveis):
     # verifica e trata o campo 'Níveis de Quantização para o Quantizador Genérico
     # retira espaços em branco do final e no inicio
     niveis = niveis.strip()
@@ -404,6 +399,8 @@ def verifica_niveis(request, dc, ampl, niveis):
     if niveis.replace('-','').replace('.','').replace(' ','').isdigit() and (niveis.find('--')==-1) and (niveis.find('- ')==-1) and (niveis.find('..')==-1) and (niveis.find('. ')==-1):
         # separa os termos
         niveis = niveis.split(' ')
+        print(niveis, type(niveis))
+
         # verifica cada um dos elementos - posicionamento do sinal negativo
         for e in niveis:
             if ((e.find('-') > 0) or (e.count('-')>1)):
@@ -412,6 +409,7 @@ def verifica_niveis(request, dc, ampl, niveis):
 
         # converte os termos para float
         niveis = [float(e) for e in niveis]
+        print(niveis, type(niveis))
         # verifica ordenação crescente
         if sorted(niveis) == niveis:
             msg = ''
@@ -528,7 +526,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
     s2 = constroi_onda_amostras(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf)[2]
     t2 = constroi_onda_amostras(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf)[3]
 
-    verifica_niveis(request, dc, ampl, niveis)
+    verifica_niveis(niveis)
     flag_subplot = subplot_image(request, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr)
 
     # para não embaralhar os rótulos do eixo x
@@ -554,8 +552,8 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
     if len(s) > 12000 or len(t2) > 1000:
         msg = 'Simulação sem possibilidade\nde visualização.\nVerifique os parâmetros.'
         plt.text(0.5, 0.5, msg, ha="center", va="center", size=20, color='k', bbox=dict(boxstyle="circle, pad=0.5", fc="r", ec="y", lw=1, alpha=0.5)), tick_params(direction='out', length=6, labelbottom="off", labelleft="off")
-    elif verifica_niveis(request, dc, ampl, niveis)[0]:
-        msg = verifica_niveis(request, dc, ampl, niveis)[0]
+    elif verifica_niveis(niveis)[0]:
+        msg = verifica_niveis(niveis)[0]
         plt.text(0.5, 0.5, msg, ha="center", va="center", size=20, color='k', bbox=dict(boxstyle="circle, pad=0.5", fc="r", ec="y", lw=1, alpha=0.5)), tick_params(direction='out', length=6, labelbottom="off", labelleft="off")
     else:
         if (plot_fourier):
@@ -592,7 +590,7 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
                     s5 = fftpack.fftshift(np.abs(fftpack.fft(s, n=nfft))) / fa
                     plot(f, s5, '-', linewidth=1.5, color='blue', label='Transformada de Fourier')
                     plt.ylabel('$F(f)$')
-                    plt.xlabel('$f$ [Hz]$')
+                    plt.xlabel('$f$ [Hz]')
                     plt.xlim([-4*freq, 4*freq])
                     plt.legend(fancybox=True, loc='upper right', shadow=True, fontsize='small', ncol=2)
                     plt.grid(which='major', axis='both', color='k', linestyle=':')
@@ -648,12 +646,12 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
         # para não ocultar o xlabel
         fig.subplots_adjust(bottom=0.2)
     elif (flag_subplot == 3):
-        fig.subplots_adjust(bottom=0.2)
+        fig.subplots_adjust(bottom=0.1)
         # para que um subplot não sobreponha o outro, espaço entre os subplots
-        fig.subplots_adjust(hspace=0.4)
+        fig.subplots_adjust(hspace=0.3)
         # As stated in the previous section, the default parameters (in inches) for Matplotlib plots are 6.4 wide and 4.8 high.
         fig.set_figwidth(9) # para 2 subplots
-        fig.set_figheight(8) # para 2 subplots
+        fig.set_figheight(9) # para 2 subplots
 
     # título
     fig.suptitle(titula_grafico(request, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr))

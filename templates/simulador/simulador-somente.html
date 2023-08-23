@@ -9,10 +9,17 @@
 	    		<legend>Simulador</legend>
 	    		{% if request.method == 'POST' %}
                 <div id="imagem1">
-					{% if simulador.t_start.value >= simulador.t_stop.value %}
-                    <!-- Para erros de início do eixo maior que o fim do eixo -->
+					<!-- Para erros de início do eixo maior que o fim do eixo -->
+                    {% if simulador.t_start.value >= simulador.t_stop.value %}
                     <h4 class="box_blue">Não processado! O <i>início do eixo</i> não pode ser maior que o <i>fim do eixo</i>. Revise os valores.</h4>
                     <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('{{ simulador.t_start.id_for_label }}');showerror('{{ simulador.t_stop.id_for_label }}')"/>
+                    <!-- Para erros de frequência  <= 0 -->
+                    {% elif simulador.freq.value <= '0' %}
+                    <h4 class="box_blue">Não processado! A <i>frequência</i> precisa ser maior que <i>zero</i>. Revise os valores.</h4>
+                    <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('{{ simulador.freq.id_for_label }}')"/>
+                    {% elif not simulador.plot_sinal.value and not simulador.plot_fourier.value and not simulador.plot_amostras.value and not simulador.plot_quant_g.value and not simulador.plot_quant_mt.value and not simulador.plot_quant_mr.value and not simulador.plot_quant_eq_g.value and not simulador.plot_quant_eq_mt.value and not simulador.plot_quant_eq_mr.value %}
+                    <h4 class="box_blue">Não processado! Nenhuma simulação foi selecionada.</h4>
+                    <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('id_simulacao');showerror('id_simulacao_legenda')"/>
                     {% else %}
                     <img class="img2" title="Gráfico de onda." src="{% static 'media/graficos/graph' %}{{simulador.random_image.value}}.png" alt="Gráfico de  onda."/>
 				    <h5 class="box_blue">Posicione o mouse em cima do gráfico, para ampliá-lo.</h5>                        
@@ -38,13 +45,8 @@
                     <tr><th><label for="{{ simulador.desl.id_for_label }}">{{ simulador.desl.label }}:</label></th><td>{{ simulador.desl }}</td></tr>
                 </table>
                 </fieldset>
-                {% if simulador.plot_sinal.value and simulador.plot_fourier.value %}
-                <fieldset id="simulacao" name="simulacao" class="sim_sim" onload="showerror('simulacao')">
-                <legend id="simulacao_legenda" name="simulacao_legenda" onload="showerror('simulacao_legenda')">Simulação</legend>
-                {% else %}
-                <fieldset class="sim_sim">
-                <legend>Simulação</legend>
-                {% endif %}
+                <fieldset id="id_simulacao" name="simulacao" class="sim_sim">
+                <legend id="id_simulacao_legenda" name="simulacao_legenda">Simulação</legend>
 	        	{% if roteiro.rot_simulador == '1' %}
                 <table class="sim_sim">
                     <tr>

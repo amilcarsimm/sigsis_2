@@ -9,8 +9,3 @@ function showerror(elmnt) {
     document.getElementById(elmnt).style.color="#f00";
     document.getElementById(elmnt).style.border="solid 2px #f00";
 }
-function showerror2(elmnt) {
-    document.getElementById(elmnt).style.color="#f00";
-    document.getElementById(elmnt).style.border="solid 2px #f00";
-}
-
