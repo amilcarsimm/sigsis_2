@@ -28,6 +28,7 @@ from django.core.files.storage import FileSystemStorage
 #===============================================================================
 graficos = FileSystemStorage(location='/setup/static/media/graficos')
 
+# msg = ''
 # para evitar erros de renderização por gráficos com muitos dados
 mpl.rcParams['agg.path.chunksize'] = 20000# conforme http://matplotlib.org/users/customizing.html
 
@@ -175,6 +176,7 @@ class SimuladorForms(forms.Form):
         label='Níveis de Quantização',
         help_text='Para o Quantizador Genérico. Em ordem crescente e separados por espaço em branco.',
         max_length=100,
+        # error_messages={'required': msg},
         widget=forms.TextInput(
             attrs={
                 'required': True,
@@ -303,6 +305,7 @@ default_data = {
 }# valores iniciais do simulador 'yrotulo': 'f(t) [V]', 'xrotulo': 't [s]'
 
 def get_simulador(request):
+    # msg = ''
     #  Processa o formulário do simulador
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -339,10 +342,23 @@ def get_simulador(request):
             # caso a frequência seja <= 0
             elif freq <= 0:
                 return SimuladorForms(request.POST, label_suffix=':')
+            # caso haja preenchimento incorreto no campo "níveis"
+            # elif verifica_niveis(niveis)[0] != '':
+            #     msg = verifica_niveis(niveis)[0]
+            #     print('!!!!!!!!!!!!!!!!', SimuladorForms.base_fields['niveis'].error_messages.get('required'))
+            #     SimuladorForms.base_fields['niveis'].error_messages = {'required': msg}
+            #     print('!!!!!!!!!!!!!!!!', SimuladorForms.base_fields['niveis'].error_messages.get('required'))
+                
+            #     print('!!!!!!!!!!!!!!!!', SimuladorForms.base_fields['niveis'].label)
+                
+            #     return SimuladorForms(request.POST, label_suffix=':')
+            # caso nenhuma simulação tenha sido selecionada
             elif not plot_sinal and not plot_fourier and not plot_amostras and not plot_quant_g and not plot_quant_mt and not plot_quant_mr and not plot_quant_eq_g and not plot_quant_eq_mt and not plot_quant_eq_mr:
                 return SimuladorForms(request.POST, label_suffix=':')
             else:
                 showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr, quantiza, niveis, limiar_inf, random_image)
+                # msg = verifica_niveis(niveis)[0]
+                # SimuladorForms.base_fields['niveis'].error_messages = {'required': msg}
                 return SimuladorForms(request.POST, label_suffix=':')
 
     # ao acessar a página pela primeira vez
@@ -399,7 +415,6 @@ def verifica_niveis(niveis):
     if niveis.replace('-','').replace('.','').replace(' ','').isdigit() and (niveis.find('--')==-1) and (niveis.find('- ')==-1) and (niveis.find('..')==-1) and (niveis.find('. ')==-1):
         # separa os termos
         niveis = niveis.split(' ')
-        print(niveis, type(niveis))
 
         # verifica cada um dos elementos - posicionamento do sinal negativo
         for e in niveis:
@@ -409,7 +424,6 @@ def verifica_niveis(niveis):
 
         # converte os termos para float
         niveis = [float(e) for e in niveis]
-        print(niveis, type(niveis))
         # verifica ordenação crescente
         if sorted(niveis) == niveis:
             msg = ''
@@ -433,7 +447,7 @@ def quantizacao_niveis(request, s, s2, dc, ampl, quantiza, niveis, limiar_inf, p
     if(plot_quant == 'mr'): vetor_niveis_lim = [k*passo_quant/2 + amin(s) + passo_quant*0.5 for k in range(int(quantiza*2-1))]
     # popula os vetores com os limiares (lim_inf e lim_sup) dos níveis de quantização 'niveis'
     if(plot_quant == 'g'):
-        niveis = verifica_niveis(request, dc, ampl, niveis)[1]
+        niveis = verifica_niveis(niveis)[1]
         vetor_niveis_lim = []
         for i in range(0,len(niveis)-1,1):
             lim = niveis[i] + (niveis[i+1] - niveis[i]) * limiar_inf
@@ -513,7 +527,6 @@ def titula_grafico(request, dc, ampl, freq, desl, fs, s_npf, titulo, plot_sinal,
 def subplot_image(request, plot_sinal, plot_fourier, plot_amostras, plot_quant_g, plot_quant_mt, plot_quant_mr, plot_quant_eq_g, plot_quant_eq_mt, plot_quant_eq_mr):
     # verifica a necessidade de subplot caso tenha fourier
     # flag para verificação da necessidade de subplot
-    print(subplot_image)
     flag_subplot = 0
     if(plot_sinal or plot_amostras or plot_quant_g or plot_quant_mt or plot_quant_mr or plot_quant_eq_g or plot_quant_eq_mt or plot_quant_eq_mr):  flag_subplot += 1
     if(plot_fourier):  flag_subplot += 2
@@ -664,9 +677,9 @@ def showimage(request, t_start, t_stop, dc, ampl, freq, desl, fs, s_npf, titulo,
     pilImage.save(im_buffer, 'PNG')
 
     path_graph = 'setup/static/media/graficos/graph' + str(random_image) + '.png'
-    print(path_graph)
+    # print(path_graph)
 
     pylab.savefig(path_graph)
     pylab.close()
 
-    return path_graph
+    # return path_graph

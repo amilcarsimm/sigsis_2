@@ -1,0 +1,4 @@
+//css para o IE
+table.menu-cabecalho-obra{position: absolute; left: 200px; visibility: hidden; float: right; clear: right; z-index: 3; background-color: #ffefd5; border: solid 1px #0000ff;}
+table.menu-cabecalho-obra2{position: absolute; left: 195px; visibility: hidden; float: right; clear: right; z-index: 3; background-color: #ffefd5; border: solid 1px #0000ff;}
+#texto{width: 99%;}

@@ -11,14 +11,14 @@
                 <div id="imagem1">
 					<!-- Para erros de início do eixo maior que o fim do eixo -->
                     {% if simulador.t_start.value >= simulador.t_stop.value %}
-                    <h4 class="box_blue">Não processado! O <i>início do eixo</i> não pode ser maior que o <i>fim do eixo</i>. Revise os valores.</h4>
+                    <h4 class="box_blue">Não processado!<br />O <i>início do eixo</i> não pode ser maior que o <i>fim do eixo</i>.<br />Revise os valores.</h4>
                     <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('{{ simulador.t_start.id_for_label }}');showerror('{{ simulador.t_stop.id_for_label }}')"/>
                     <!-- Para erros de frequência  <= 0 -->
                     {% elif simulador.freq.value <= '0' %}
-                    <h4 class="box_blue">Não processado! A <i>frequência</i> precisa ser maior que <i>zero</i>. Revise os valores.</h4>
+                    <h4 class="box_blue">Não processado!<br />A <i>frequência</i> precisa ser maior que <i>zero</i>.<br />Revise os valores.</h4>
                     <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('{{ simulador.freq.id_for_label }}')"/>
                     {% elif not simulador.plot_sinal.value and not simulador.plot_fourier.value and not simulador.plot_amostras.value and not simulador.plot_quant_g.value and not simulador.plot_quant_mt.value and not simulador.plot_quant_mr.value and not simulador.plot_quant_eq_g.value and not simulador.plot_quant_eq_mt.value and not simulador.plot_quant_eq_mr.value %}
-                    <h4 class="box_blue">Não processado! Nenhuma simulação foi selecionada.</h4>
+                    <h4 class="box_blue">Não processado!<br />Nenhuma simulação foi selecionada.</h4>
                     <img class="img5" title="Erro de Parametrização." alt="Erro de Parametrização." src="{% static 'media/imagens/errado.gif' %}" onload="showerror('id_simulacao');showerror('id_simulacao_legenda')"/>
                     {% else %}
                     <img class="img2" title="Gráfico de onda." src="{% static 'media/graficos/graph' %}{{simulador.random_image.value}}.png" alt="Gráfico de  onda."/>
