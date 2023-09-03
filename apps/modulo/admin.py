@@ -9,6 +9,11 @@ admin.site.index_title = "Administração do Site"
 admin.site.site_title = "Tópicos de Conhecimento"
 #admin.site.site_url = ""
 
+# from .models import QuillPost
+# @admin.register(QuillPost)
+# class QuillPostAdmin(admin.ModelAdmin):
+#      pass
+
 '''
 class MCEFilebrowserAdmin(admin.ModelAdmin):
     #pass

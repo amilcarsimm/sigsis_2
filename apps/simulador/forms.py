@@ -19,6 +19,9 @@ import random
 import string
 import time
 
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 from django.core.files.storage import FileSystemStorage
 #===============================================================================
 # from random import *
@@ -284,7 +287,12 @@ class SimuladorForms(forms.Form):
         widget=forms.HiddenInput(),
         required=False
     )
-
+    def clean_freq(self):
+            freq = self.cleaned_data['freq']
+            if freq <= 0:
+                raise forms.ValidationError("Price cannot be less than 0.01")
+            return freq
+    
 # definindo os valores iniciais
 im = str(mk_str(8))# gerará um número com 8 dígitos para complementar o nome do gráfico
 # dicionário

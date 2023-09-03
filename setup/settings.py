@@ -43,13 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'tinymce',
-    #'sorl.thumbnail',
-    #'mce_filebrowser',
-    #'widget_tweaks',# biblioteca para customizar elementos do form simulador no template
+    # 'tinymce',
+    # 'sorl.thumbnail',
+    # 'mce_filebrowser',
+    # 'widget_tweaks',# biblioteca para customizar elementos do form simulador no template
     'apps.modulo.apps.ModuloConfig',
-    #'apps.roteiro.apps.RoteiroConfig',
+    # 'apps.roteiro.apps.RoteiroConfig',
     'apps.simulador.apps.SimuladorConfig',
+    # 'django_quill',
 ]
 
 MIDDLEWARE = [
@@ -131,7 +132,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'setup/static')
+    os.path.join(BASE_DIR, 'setup/static')
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -179,11 +180,31 @@ TINYMCE_DEFAULT_CONFIG = {
     #'paste_text_sticky_default' : True,
     #'style_formats' : "[{title : 'Bold text', inline : 'strong'},{title : 'Red text', inline : 'span', styles : {color : '#ff0000'}},{title : 'Help', inline : 'strong', classes : 'help'},{title : 'Table styles'},{title : 'Table row 1', selector : 'tr', classes : 'tablerow'}]",
 }
-
+'''
 #Sessao
 SESSION_COOKIE_AGE = 43200 # 12 horas * 60 minutos * 60 segundos
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 SESSION_SAVE_EVERY_REQUEST = True
-'''
+
+# QUILL_CONFIGS = {
+#     'default':{
+#         'theme': 'snow',
+#         'modules': {
+#             'syntax': True,
+#             'toolbar': [
+#                 [
+#                     {'font': []},
+#                     {'header': []},
+#                     {'align': []},
+#                     'bold', 'italic', 'underline', 'strike', 'blockquote',
+#                     {'color': []},
+#                     {'background': []},
+#                 ],
+#                 ['code-block', 'link'],
+#                 ['clean'],
+#             ]
+#         }
+#     }
+# }

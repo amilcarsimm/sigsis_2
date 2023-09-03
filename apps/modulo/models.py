@@ -4,7 +4,11 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 
-#from tinymce.models import HTMLField
+
+# from django_quill.fields import QuillField
+
+# class QuillPost(models.Model):
+#     content = QuillField()
 
 class Modulo(models.Model):
     mod_nome = models.CharField(max_length=100, verbose_name='Título do Módulo', unique=True)
